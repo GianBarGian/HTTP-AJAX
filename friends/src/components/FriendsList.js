@@ -21,10 +21,10 @@ export default class FriendsList extends React.Component {
         axios.get(url)
             .then(res => this.setFriends(res.data))
             .catch(this.setError)
+            .then(this.stopSpinner);
     }
 
     setFriends = friends => {
-        
         this.setState({ friends });
     }
 
@@ -39,6 +39,18 @@ export default class FriendsList extends React.Component {
     stopSpinner = () => this.setState({ loading: false }) 
 
     render() {
+        if(this.state.loading) {
+            return (
+                <div>
+                    Loading...
+                </div>
+            )
+        }
+        if (this.state.error) {
+            return (
+                <div>{this.state.error.message}</div>
+            )
+        }
         return (
             <div>
                {
