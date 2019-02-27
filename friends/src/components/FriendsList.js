@@ -1,15 +1,30 @@
 import React from 'react';
 import axios from 'axios';
+import Friend from './Friend';
 
 
 export default class FriendsList extends React.Component {
     state = {
-        friends: null,
+        friends: [],
         error: null,
         loading: false,
     }
 
+    componentDidMount() {
+        this.fetchData('http://localhost:5000/friends')
+        
+    }
+
+    fetchData = url => {
+        this.resetError();
+        this.startSpinner();
+        axios.get(url)
+            .then(res => this.setFriends(res.data))
+            .catch(this.setError)
+    }
+
     setFriends = friends => {
+        
         this.setState({ friends });
     }
 
@@ -22,4 +37,16 @@ export default class FriendsList extends React.Component {
     startSpinner = () => this.setState({ loading: true })
 
     stopSpinner = () => this.setState({ loading: false }) 
+
+    render() {
+        return (
+            <div>
+               {
+                   this.state.friends.map(friend => 
+                       <Friend friend={friend} />
+                   )
+               }
+            </div>
+        )
+    }
 }
